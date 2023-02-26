@@ -17,7 +17,14 @@ class App(Tk):
     def __init__(self):
         Tk.__init__(self)
         self.title("Todo-er")
-        self.iconbitmap("./icon.ico")
+        try:
+            self.iconbitmap("./icon.ico")
+        except:
+            self.withdraw()
+            showerror("Error", "Error: Icon file not found")
+            self.deiconify()
+            self.update()
+        
         self.style = ttk.Style()
         self.style.theme_use("clam")
         
