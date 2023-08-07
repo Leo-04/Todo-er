@@ -32,11 +32,11 @@ class CheckList(ttk.Treeview):
     def is_on(self, iid: str):
         return self.item(iid, "text")[0] == self.on_text
     
-    def add_items(self, parent: str, items: list[bool, str, list[...], ...]):
-        for i in range(0, len(items), 3):
-            done = items[i]
-            name = items[i + 1]
-            values = items[i + 2]
+    def add_items(self, parent: str, items: list[list[bool, str, list[...]], ...]):
+        for item in items:
+            done = item[0]
+            name = item[1]
+            values = item[2]
 
             node = self.add_item(parent, name, done)
             

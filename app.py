@@ -10,6 +10,7 @@ from check_list import CheckList
 from menu_bar import MenuBar
 from menu_options import MenuOptions
 from undo_redo import UndoRedo
+from drag_and_drop import DragAndDrop
 
 import file
 
@@ -33,6 +34,7 @@ class App(Tk):
         self.menu_bar = MenuBar(self)
         self.options = MenuOptions(self.check_list)
         self.undo_redo = UndoRedo(self.check_list)
+        self.drag_and_drop = DragAndDrop(self.check_list)
         
         scroll_bar = ttk.Scrollbar(self)
         scroll_bar.configure(command=self.check_list.yview)
@@ -47,7 +49,9 @@ class App(Tk):
         self.menu_bar.add("Dark Mode", lambda: self.set_colors("#DDDDDD", "#333333"), "<Control-d>")
         self.menu_bar.add("Light Mode", lambda: self.set_colors("#000000", "#EEEEEE"), "<Control-l>")
         self.menu_bar.add_sep()
-        self.menu_bar.add("Reset Zoom", lambda: self.set_font_size(20), "<Control-0>")
+        self.menu_bar.add(" - ", lambda: self.set_font_size(max(5, self.font.cget("size")-1)), "<Control-minus>", 0)
+        self.menu_bar.add(" + ", lambda: self.set_font_size(min(100, self.font.cget("size")+1)), "<Control-equal>", 0)
+        self.menu_bar.add("Reset Zoom", lambda: self.set_font_size(20), "<Control-0>", 0)
 
         self.menu_bar.pack(side=TOP, fill=X)
         scroll_bar.pack(side=RIGHT, fill=Y)
@@ -95,7 +99,7 @@ class App(Tk):
         if self.filename:
             self.title("Todo-er - " + self.filename)
             
-            open(self.filename, "w").write(out_string)
+            open(self.filename, "w", encoding="utf-8").write(out_string)
 
     def open(self):
         if not askokcancel("Todo-er", "Any unsaved work will be lost"):
@@ -106,7 +110,7 @@ class App(Tk):
         if self.filename:
             self.title("Todo-er - " + self.filename)
             
-            data = file.string_to_data(open(self.filename, "r").read())
+            data = file.string_to_data(open(self.filename, "r", encoding="utf-8").read())
 
             self.undo_redo.buffer = []
             self.undo_redo.buffer_pos = 0
